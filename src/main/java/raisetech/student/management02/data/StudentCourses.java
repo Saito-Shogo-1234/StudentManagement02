@@ -1,4 +1,4 @@
-package raisetech.student.management02;
+package raisetech.student.management02.data;
 
 
 import java.sql.Timestamp;
