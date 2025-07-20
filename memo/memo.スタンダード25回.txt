@@ -1,0 +1,18 @@
+registerStudent.html
+  th:actionのURLはPOSTのURL
+   ・th:action="@{/student}"
+  th:objectは引数に呼び出したいオブジェクトの名前
+  studentはpublic String registerStudent(StudentDetail student)のstudentのこと
+   ・th:object="${student}"
+  methodはformの属性
+   ・method="post"
+  thが付いているのはThymLeafの属性
+   ・<form th:action="@{/student}" th:object="${studentDetail}" method="post"></form>
+  divは1つのまとまりみたいなもの
+  th:fieldの*は"StudentDetailの"を省略している
+  ・*{student.name}={studentDetail.student.name}
+
+
+StudentController
+  @PostMapping("/registerStudent")
+    public String registerStudent(StudentDetail student)
