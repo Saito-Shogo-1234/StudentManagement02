@@ -1,5 +1,6 @@
 package raisetech.student.management02.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,6 @@ public class StudentDetail {
   // ★ null防止のためのコンストラクタ追加
   public StudentDetail() {
     this.student = new Student();
+    this.studentCourses = new ArrayList<>();
   }
 }
