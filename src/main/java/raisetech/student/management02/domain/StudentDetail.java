@@ -14,6 +14,8 @@ public class StudentDetail {
   private Student student;
   private List<StudentsCourses> studentCourses;
 
+  private boolean cancelUpdate;
+
   // ★ null防止のためのコンストラクタ追加
   public StudentDetail() {
     this.student = new Student();
