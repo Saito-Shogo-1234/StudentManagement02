@@ -63,11 +63,23 @@ public class StudentController {
 
   @PostMapping("/updateStudent")
   public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (studentDetail.getStudent() == null) {
+      studentDetail.setStudent(new Student());
+    }
+
     if (result.hasErrors()) {
       return "updateStudent";
     }
 
-    service.updateStudent(studentDetail);
-    return "redirect:/studentList";
+    if (studentDetail.isCancelUpdate()) {
+      studentDetail.getStudent().setDeleted(true);  // ← ここをsetIsDeletedからsetDeletedに変更
+      service.updateStudent(studentDetail);
+      return "redirect:/studentList";
+    } else {
+      studentDetail.getStudent().setDeleted(false);  // ← 同じく
+      service.updateStudent(studentDetail);
+      return "redirect:/studentList";
+    }
   }
+
 }
