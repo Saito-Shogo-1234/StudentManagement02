@@ -72,10 +72,14 @@ public class StudentController {
     }
 
     if (studentDetail.isCancelUpdate()) {
+      studentDetail.getStudent().setDeleted(true);  // ← ここをsetIsDeletedからsetDeletedに変更
+      service.updateStudent(studentDetail);
+      return "redirect:/studentList";
+    } else {
+      studentDetail.getStudent().setDeleted(false);  // ← 同じく
+      service.updateStudent(studentDetail);
       return "redirect:/studentList";
     }
-
-    service.updateStudent(studentDetail);
-    return "redirect:/studentList";
   }
+
 }
