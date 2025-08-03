@@ -16,7 +16,6 @@ public class StudentDetail {
 
   private boolean cancelUpdate;
 
-  // ★ null防止のためのコンストラクタ追加
   public StudentDetail() {
     this.student = new Student();
     this.studentCourses = new ArrayList<>();

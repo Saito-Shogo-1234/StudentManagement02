@@ -15,7 +15,6 @@ public class Student {
   private String area;
   private int age;
   private String sex;
-  //課題で追加
   private String remark;
   private boolean isDeleted;
 }
