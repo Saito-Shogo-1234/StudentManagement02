@@ -1,13 +1,12 @@
 package raisetech.student.management02.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,10 +37,10 @@ public class StudentController {
    *
    * @return　受講生詳細一覧(全件)
    */
+  @Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudnetList() throws TestException {
-    throw new TestException
-        ("現在このAPIは利用できません。URLは「studentList」ではなく「students」を利用してください。");
+  public List<StudentDetail> getStudnetList() {
+    return service.searchStudentList();
   }
 
   /**
@@ -51,6 +50,7 @@ public class StudentController {
    * @param id　受講生ID
    * @return　受講生
    */
+  @Operation(summary = "受講生検索", description = "IDに該当する受講生の詳細情報を取得します。")
   @GetMapping("/student/{id}")
   public StudentDetail getStudent(
       @PathVariable @Size(min = 1, max = 3) String id) {
@@ -63,6 +63,7 @@ public class StudentController {
    * @param studentDetail　受講生詳細
    * @return　実行結果
    */
+  @Operation(summary = "受講生登録", description = "受講生を登録します。")
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(
       @RequestBody @Valid StudentDetail studentDetail) {
@@ -77,6 +78,7 @@ public class StudentController {
    * @param studentDetail　受講生詳細
    * @return　実行結果
    */
+  @Operation(summary = "受講生更新", description = "受講生の詳細情報を更新します。")
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody @Valid StudentDetail studentDetail) {
     service.updateStudent(studentDetail);
