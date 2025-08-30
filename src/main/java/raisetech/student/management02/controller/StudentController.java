@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management02.domain.StudentDetail;
-import raisetech.student.management02.exception.TestException;
 import raisetech.student.management02.service.StudentService;
 
 /**
