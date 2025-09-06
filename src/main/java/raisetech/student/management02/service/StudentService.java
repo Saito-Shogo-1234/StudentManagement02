@@ -80,7 +80,7 @@ public class StudentService {
    * @param studentCourses　受講生コース情報
    * @param student　受講生
    */
-  private void initStudentsCourse(StudentCourse studentCourses, Student student) {
+  void initStudentsCourse(StudentCourse studentCourses, Student student) {
     LocalDateTime now = LocalDateTime.now();
 
     studentCourses.setStudentId(student.getId());
@@ -100,6 +100,4 @@ public class StudentService {
     studentDetail.getStudentCourseList()
         .forEach(studentCourses -> repository.updateStudentCourse(studentCourses));
   }
-
-
 }
