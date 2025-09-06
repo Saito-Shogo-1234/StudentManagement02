@@ -54,7 +54,7 @@ class StudentServiceTest {
   void 受講生詳細検索＿IDに紐づきリポジトリの処理が適切に呼び出されていること() {
     String id = "123";
     Student student = new Student();
-    student.setId(Integer.valueOf("123"));
+    student.setId("123");
     List<StudentCourse> studentCourseList = new ArrayList<>();
 
     when(repository.searchStudent(id)).thenReturn(student);
@@ -69,7 +69,7 @@ class StudentServiceTest {
   @Test
   void 受講生登録処理＿リポジトリの処理が適切に呼び出せていること() {
     Student student = new Student();
-    student.setId(Integer.valueOf("123"));
+    student.setId("123");
     StudentCourse course = new StudentCourse();
     List<StudentCourse> courseList = List.of(course);
     StudentDetail studentDetail = new StudentDetail(student, courseList);
@@ -83,7 +83,7 @@ class StudentServiceTest {
   @Test
   void 受講生更新処理＿リポジトリの更新メソッドが適切に呼び出されていること() {
     Student student = new Student();
-    student.setId(Integer.valueOf("123"));
+    student.setId("123");
     StudentCourse course = new StudentCourse();
     List<StudentCourse> courseList = List.of(course);
     StudentDetail studentDetail = new StudentDetail(student, courseList);
@@ -97,7 +97,7 @@ class StudentServiceTest {
   @Test
   void 受講生コース初期化＿正しく値が設定されていること() {
     Student student = new Student();
-    student.setId(Integer.valueOf("123"));
+    student.setId("123");
 
     StudentCourse studentCourse = new StudentCourse();
 

@@ -3,6 +3,7 @@ package raisetech.student.management02.data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,10 @@ import lombok.Setter;
 @Setter
 public class Student {
 
-  private Integer id;
+  @NotBlank(message = "IDは必須です")
+  @Pattern(regexp = "\\d+", message = "数字のみ入力するようにしてください。")
+  private String id;
+
 
   @NotBlank
   private String name;
