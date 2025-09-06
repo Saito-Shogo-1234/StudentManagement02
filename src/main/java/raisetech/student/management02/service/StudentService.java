@@ -2,6 +2,7 @@ package raisetech.student.management02.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,11 +47,14 @@ public class StudentService {
    * @param id　受講生ID
    * @return　受講生詳細
    */
-  public StudentDetail searchStudent(String id){
-    Student student = repository.searchStudent(id);
+  public StudentDetail searchStudent(String id) {
+    Student student = Optional.ofNullable(repository.searchStudent(id))
+        .orElseThrow(() -> new RuntimeException("学生が存在しません: " + id));
+
     List<StudentCourse> studentCourse = repository.searchStudentCourse(student.getId());
     return new StudentDetail(student, studentCourse);
   }
+
 
   public List<StudentCourse> searchStudentCoursesList() {
     return repository.searchStudentCourseList();
@@ -66,7 +70,12 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student student = studentDetail.getStudent();
+
+    String newId = generateStudentId(); // 例: S001
+    student.setId(newId);
+
     repository.registerStudent(student);
+
     studentDetail.getStudentCourseList().forEach(studentCourses -> {
       initStudentsCourse(studentCourses, student);
       repository.registerStudentCourse(studentCourses);
@@ -99,5 +108,11 @@ public class StudentService {
     repository.updateStudent(studentDetail.getStudent());
     studentDetail.getStudentCourseList()
         .forEach(studentCourses -> repository.updateStudentCourse(studentCourses));
+  }
+
+  private String generateStudentId() {
+    String maxId = repository.findMaxId();
+    int num = Integer.parseInt(maxId.substring(1));
+    return String.format("S%03d", num + 1);
   }
 }

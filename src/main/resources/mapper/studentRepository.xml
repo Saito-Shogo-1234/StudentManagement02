@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="raisetech.student.management02.repository.StudentRepository">
 
+  <!-- 最大の学生IDを取得 -->
+  <select id="findMaxId" resultType="string">
+    SELECT MAX(id) FROM students
+  </select>
+
   <!-- 受講生全件検索　-->
   <select id="search" resultType="raisetech.student.management02.data.Student">
     SELECT * FROM students WHERE isDeleted = 0
@@ -26,9 +31,9 @@
   <insert id="registerStudent" parameterType="raisetech.student.management02.data.Student"
     useGeneratedKeys = "true" keyProperty = "id">
     INSERT INTO students
-      (name, kana_name, nick_name, email, area, age, sex, remark, isDeleted)
+      (id,name, kana_name, nick_name, email, area, age, sex, remark, isDeleted)
     VALUES
-      (#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
+      (#{id},#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
   </insert>
 
   <!-- 受講生コ－ス情報の登録-->

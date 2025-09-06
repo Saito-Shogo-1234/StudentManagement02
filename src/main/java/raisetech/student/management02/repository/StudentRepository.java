@@ -70,4 +70,11 @@ public interface StudentRepository {
    * @param studentCourse　受講生コース情報
    */
   void updateStudentCourse(StudentCourse studentCourse);
+
+  /**
+   * 現在の最大の学生IDを取得します。
+   *
+   * @return 最大の学生ID
+   */
+  String findMaxId();
 }
