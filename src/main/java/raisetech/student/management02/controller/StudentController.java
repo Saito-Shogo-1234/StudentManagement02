@@ -52,7 +52,7 @@ public class StudentController {
   @Operation(summary = "受講生検索", description = "IDに該当する受講生の詳細情報を取得します。")
   @GetMapping("/student/{id}")
   public StudentDetail getStudent(
-      @PathVariable @Size(min = 1, max = 3) String id) {
+      @PathVariable @Size(min = 1, max = 10) String id) {
     return service.searchStudent(id);
   }
 
