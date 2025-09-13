@@ -85,7 +85,7 @@ class StudentControllerTest {
                           "kanaName" : "トキワシロウ",
                           "nickname" : "シロトキ",
                           "email" : "shiro.tokiwa@example.com",
-                          "area" : "山形", 
+                          "area" : "山形",
                           "age" : "64",
                           "sex" : "男性",
                           "remark" : ""
