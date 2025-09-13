@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class Student {
 
-  @Pattern(regexp = "\\d+", message = "数字のみ入力するようにしてください。")
+  @Pattern(regexp = "[A-Za-z0-9]+", message = "半角英数字のみ入力してください。")
   private String id;
 
 
