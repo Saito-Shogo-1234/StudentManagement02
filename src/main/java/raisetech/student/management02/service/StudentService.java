@@ -69,10 +69,7 @@ public class StudentService {
    * */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
-    Student student = studentDetail.getStudent();
-
-    String newId = generateStudentId(); // 例: S001
-    student.setId(newId);
+    Student student = studentDetail.getStudent();;
 
     repository.registerStudent(student);
 
@@ -108,11 +105,5 @@ public class StudentService {
     repository.updateStudent(studentDetail.getStudent());
     studentDetail.getStudentCourseList()
         .forEach(studentCourses -> repository.updateStudentCourse(studentCourses));
-  }
-
-  private String generateStudentId() {
-    String maxId = repository.findMaxId();
-    int num = Integer.parseInt(maxId.substring(1));
-    return String.format("S%03d", num + 1);
   }
 }

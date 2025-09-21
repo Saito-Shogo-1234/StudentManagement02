@@ -9,7 +9,7 @@
 
   <!-- 受講生全件検索　-->
   <select id="search" resultType="raisetech.student.management02.data.Student">
-    SELECT * FROM students WHERE isDeleted = 0
+    SELECT * FROM students WHERE isDeleted = false
   </select>
 
   <!-- 受講生の検索　-->
@@ -31,9 +31,9 @@
   <insert id="registerStudent" parameterType="raisetech.student.management02.data.Student"
     useGeneratedKeys = "true" keyProperty = "id">
     INSERT INTO students
-      (id,name, kana_name, nick_name, email, area, age, sex, remark, isDeleted)
+      (name, kana_name, nick_name, email, area, age, sex, remark, isDeleted)
     VALUES
-      (#{id},#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
+      (#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
   </insert>
 
   <!-- 受講生コ－ス情報の登録-->
