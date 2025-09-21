@@ -1,9 +1,8 @@
 package raisetech.student.management02.controller.converter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,57 +21,56 @@ class StudentConverterTest {
 
   @Test
   void 受講生1人にコースが1つ紐づく場合_正しく変換されること() {
-    Student student = new Student();
-    student.setId("1");
-    student.setName("後藤あいり");
+    Student student = createStudent();
 
     StudentCourse course = new StudentCourse();
+    course.setId("1");
     course.setStudentId("1");
     course.setCourseName("Java");
+    course.setCourseStartAt(LocalDateTime.now());
+    course.setCourseEndAt(LocalDateTime.now().plusYears(1));
+
+    List<Student> studentList = List.of(student);
+    List<StudentCourse> studentCourseList = List.of(course);
+
+    List<StudentDetail> result= sut.convertStudentDetails(studentList, studentCourseList);
+
+    assertThat(result.get(0).getStudent()).isEqualTo(student);
+    assertThat(result.get(0).getStudentCourseList()).isEqualTo(studentCourseList);
+  }
+
+  @Test
+  void 紐づいていない受講生コース情報は除外されること() {
+    Student student = createStudent();
+
+    StudentCourse course = new StudentCourse();
+    course.setId("1");
+    course.setStudentId("2");
+    course.setCourseName("Java");
+    course.setCourseStartAt(LocalDateTime.now());
+    course.setCourseEndAt(LocalDateTime.now().plusYears(1));
 
     List<Student> studentList = List.of(student);
     List<StudentCourse> studentCourseList = List.of(course);
 
     List<StudentDetail> result = sut.convertStudentDetails(studentList, studentCourseList);
 
-    assertEquals(1, result.size());
-    assertEquals("1", result.get(0).getStudent().getId());
-    assertEquals("Java", result.get(0).getStudentCourseList().get(0).getCourseName());
+    assertThat(result.get(0).getStudent()).isEqualTo(student);
+    assertThat(result.get(0).getStudentCourseList()).isEmpty();
   }
 
-  @Test
-  void 受講生1人に複数コースが紐づく場合_全てマッピングされること() {
+  private static Student createStudent() {
     Student student = new Student();
-    student.setId("2");
-
-    StudentCourse course1 = new StudentCourse();
-    course1.setStudentId("2");
-    course1.setCourseName("Spring");
-
-    StudentCourse course2 = new StudentCourse();
-    course2.setStudentId("2");
-    course2.setCourseName("MySQL");
-
-    List<Student> studentList = List.of(student);
-    List<StudentCourse> studentCourseList = List.of(course1, course2);
-
-    List<StudentDetail> result = sut.convertStudentDetails(studentList, studentCourseList);
-
-    assertEquals(1, result.size());
-    assertEquals(2, result.get(0).getStudentCourseList().size());
-  }
-
-  @Test
-  void コースが存在しない場合_空のリストになること() {
-    Student student = new Student();
-    student.setId("3");
-
-    List<Student> studentList = List.of(student);
-    List<StudentCourse> studentCourseList = new ArrayList<>();
-
-    List<StudentDetail> result = sut.convertStudentDetails(studentList, studentCourseList);
-
-    assertEquals(1, result.size());
-    assertTrue(result.get(0).getStudentCourseList().isEmpty());
+    student.setId("1");
+    student.setName("三橋桃子");
+    student.setName("ミハシモモコ");
+    student.setName("モモカン");
+    student.setName("mihashi.momoko@example.com");
+    student.setName("京都");
+    student.setName("19");
+    student.setName("女性");
+    student.setName("");
+    student.setName("false");
+    return student;
   }
 }
