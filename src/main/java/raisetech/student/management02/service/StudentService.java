@@ -69,7 +69,11 @@ public class StudentService {
    * */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
-    Student student = studentDetail.getStudent();;
+    Student student = studentDetail.getStudent();
+
+    if (student.getName() == null || student.getName().isBlank()) {
+      throw new IllegalArgumentException("名前は必須です");
+    }
 
     repository.registerStudent(student);
 
