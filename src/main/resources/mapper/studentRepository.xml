@@ -7,12 +7,12 @@
     SELECT MAX(id) FROM students
   </select>
 
-  <!-- 受講生全件検索　-->
+  <!-- 受講生全件検索 -->
   <select id="search" resultType="raisetech.student.management02.data.Student">
-    SELECT * FROM students WHERE isDeleted = false
+    SELECT * FROM students WHERE is_deleted = false
   </select>
 
-  <!-- 受講生の検索　-->
+  <!-- 受講生の検索 -->
   <select id="searchStudent" resultType="raisetech.student.management02.data.Student">
     SELECT * FROM students WHERE id = #{id}
   </select>
@@ -27,23 +27,74 @@
     SELECT * FROM students_courses WHERE student_id = #{studentId}
   </select>
 
+  <!-- CourseStatus の resultMap -->
+  <resultMap id="courseStatusMap" type="raisetech.student.management02.data.CourseStatus">
+    <id property="id" column="id"/>
+    <result property="studentCourseId" column="student_course_id"/>
+    <result property="statusName" column="status_name"/>
+  </resultMap>
+
+  <!-- StudentCourse と CourseStatus を結合した resultMap -->
+  <resultMap id="studentCourseDetailMap" type="raisetech.student.management02.data.StudentCourse">
+    <id property="id" column="course_id"/>
+    <result property="studentId" column="student_id"/>
+    <result property="courseName" column="course_name"/>
+    <result property="courseStartAt" column="course_start_at"/>
+    <result property="courseEndAt" column="course_end_at"/>
+    <association property="courseStatus" columnPrefix="status_" resultMap="courseStatusMap"/>
+  </resultMap>
+
+  <!-- 受講生IDに紐づく受講生コース＋受講状況の詳細検索 -->
+  <select id="searchStudentCourseStatus" resultMap="studentCourseDetailMap">
+    SELECT
+    sc.id AS course_id,
+    sc.student_id,
+    sc.course_name,
+    sc.course_start_at,
+    sc.course_end_at,
+    cs.id AS status_id,
+    cs.student_course_id AS status_student_course_id,
+    cs.status_name AS status_status_name
+    FROM students_courses sc
+    LEFT JOIN course_status cs
+    ON sc.id = cs.student_course_id
+    WHERE sc.student_id = #{studentId}
+  </select>
+
+  <!-- course_status の全件検索 -->
+  <select id="searchCourseStatusList" resultMap="courseStatusMap">
+    SELECT
+    id,
+    student_course_id,
+    status_name
+    FROM course_status
+  </select>
+
   <!-- 受講生の登録 -->
   <insert id="registerStudent" parameterType="raisetech.student.management02.data.Student"
-    useGeneratedKeys = "true" keyProperty = "id">
+    useGeneratedKeys="true" keyProperty="id">
     INSERT INTO students
-      (name, kana_name, nick_name, email, area, age, sex, remark, isDeleted)
+    (name, kana_name, nick_name, email, area, age, sex, remark, is_deleted)
     VALUES
-      (#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
+    (#{name}, #{kanaName}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)
   </insert>
 
-  <!-- 受講生コ－ス情報の登録-->
+  <!-- 受講生コース情報の登録 -->
   <insert id="registerStudentCourse" parameterType="raisetech.student.management02.data.StudentCourse"
-    useGeneratedKeys = "true" keyProperty = "id">
+    useGeneratedKeys="true" keyProperty="id">
     INSERT INTO students_courses
-     (student_id, course_name, course_start_at, course_end_at)
+    (student_id, course_name, course_start_at, course_end_at)
     VALUES
-      (#{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})
+    (#{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})
   </insert>
+
+  <!-- 受講生受講状況の登録 -->
+  <insert id="registerCourseStatus" parameterType="raisetech.student.management02.data.CourseStatus"
+    useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO course_status (student_course_id, status_name)
+    VALUES (#{studentCourseId}, #{statusName})
+  </insert>
+
 
   <!-- 受講生の更新 -->
   <update id="updateStudent" parameterType="raisetech.student.management02.data.Student">
@@ -56,14 +107,23 @@
     age = #{age},
     sex = #{sex},
     remark = #{remark},
-    isDeleted = #{isDeleted} WHERE id = #{id}
+    is_deleted = #{isDeleted}
+    WHERE id = #{id}
   </update>
 
-  <!-- 受講生コース情報のコース名を更新 -->
+  <!-- 受講生コース情報の更新 -->
   <update id="updateStudentCourse" parameterType="raisetech.student.management02.data.StudentCourse">
     UPDATE students_courses
     SET course_name = #{courseName},
     course_start_at = #{courseStartAt},
-    course_end_at = #{courseEndAt} WHERE id = #{id}
+    course_end_at = #{courseEndAt}
+    WHERE id = #{id}
   </update>
+
+  <update id="updateCourseStatus" parameterType="raisetech.student.management02.data.CourseStatus">
+    UPDATE course_status
+    SET status_name = #{statusName}
+    WHERE id = #{id}
+  </update>
+
 </mapper>

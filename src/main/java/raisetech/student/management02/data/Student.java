@@ -3,7 +3,6 @@ package raisetech.student.management02.data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +11,7 @@ import lombok.Setter;
 @Setter
 public class Student {
 
-  @Pattern(regexp = "[A-Za-z0-9]+", message = "半角英数字のみ入力してください。")
-  private String id;
+  private int id;
 
 
   @NotBlank
@@ -39,5 +37,4 @@ public class Student {
 
   private String remark;
   private boolean isDeleted;
-
 }

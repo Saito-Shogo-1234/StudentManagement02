@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management02.controller.converter.StudentConverter;
+import raisetech.student.management02.data.CourseStatus;
 import raisetech.student.management02.data.Student;
 import raisetech.student.management02.data.StudentCourse;
 import raisetech.student.management02.domain.StudentDetail;
@@ -36,9 +37,13 @@ public class StudentService {
    */
   public List<StudentDetail> searchStudentList() {
     List<Student> studentList = repository.search();
-    List<StudentCourse> studentCourseList = repository.searchStudentCourseList();
-    return converter.convertStudentDetails(studentList, studentCourseList);
+    List<StudentCourse> studentCourseList = repository.searchStudentCourseList(); // 全コース
+    List<CourseStatus> courseStatusList = repository.searchCourseStatusList(); // 全申込状況
+
+    return converter.convertStudentDetails(studentList, studentCourseList, courseStatusList);
   }
+
+
 
   /**
    * 受講生詳細検索です。
@@ -51,14 +56,16 @@ public class StudentService {
     Student student = Optional.ofNullable(repository.searchStudent(id))
         .orElseThrow(() -> new RuntimeException("学生が存在しません: " + id));
 
-    List<StudentCourse> studentCourse = repository.searchStudentCourse(student.getId());
-    return new StudentDetail(student, studentCourse);
+    List<StudentCourse> studentCourseList = repository.searchStudentCourseList();
+    List<CourseStatus> courseStatusList = repository.searchCourseStatusList();
+
+    return converter.convertStudentDetails(
+        List.of(student),
+        studentCourseList,
+        courseStatusList
+    ).get(0);
   }
 
-
-  public List<StudentCourse> searchStudentCoursesList() {
-    return repository.searchStudentCourseList();
-  }
 
   /**
    * 受講生詳細の登録を行います。
@@ -69,16 +76,22 @@ public class StudentService {
    * */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
-    Student student = studentDetail.getStudent();;
-
+    Student student = studentDetail.getStudent();
     repository.registerStudent(student);
 
-    studentDetail.getStudentCourseList().forEach(studentCourses -> {
-      initStudentsCourse(studentCourses, student);
-      repository.registerStudentCourse(studentCourses);
+    studentDetail.getStudentCourseDetailList().forEach(detail -> {
+      StudentCourse course = detail.getStudentCourse();
+      initStudentsCourse(course, student);
+      repository.registerStudentCourse(course); // course.id がここで取得される
+
+      CourseStatus status = detail.getCourseStatus();
+      status.setStudentCourseId(course.getId());
+      repository.registerCourseStatus(status); // courseStatus を登録
     });
+
     return studentDetail;
   }
+
 
   /**
    *受講生コース情報を登録する際の初期情報を設定する。
@@ -103,7 +116,10 @@ public class StudentService {
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
     repository.updateStudent(studentDetail.getStudent());
-    studentDetail.getStudentCourseList()
-        .forEach(studentCourses -> repository.updateStudentCourse(studentCourses));
+
+    studentDetail.getStudentCourseDetailList().forEach(detail -> {
+      repository.updateStudentCourse(detail.getStudentCourse());
+      repository.updateCourseStatus(detail.getCourseStatus());
+    });
   }
 }
